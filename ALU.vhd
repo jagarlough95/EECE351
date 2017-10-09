@@ -36,6 +36,7 @@ signal A_sig, B_sig : signed (data_size-1 downto 0);
 signal R_sig : signed (data_size-1 downto 0);
 signal N, Z, C, V : std_logic;
 signal sum : signed (data_size downto 0);
+signal sub : signed (data_size downto 0);
 
 begin
 A_sig <= signed(A);
@@ -44,10 +45,10 @@ B_sig <= signed(B);
 	process(A, B, ALUControl)
 	begin
 		case ALUControl is
-			when "00" => Sum <= resize(A_sig,data_size+1) + resize(B_sig,data_size+1);
-								R_sig <= Sum(data_size-1 downto 0);
-			when "01" => Sum <= resize(A_sig,data_size+1) - resize(B_sig,data_size+1);
-							R_sig <= Sum(data_size-1 downto 0);
+			when "00" => sum <= resize(A_sig,data_size+1) + resize(B_sig,data_size+1);
+								R_sig <= sum(data_size-1 downto 0);
+			when "01" => sub <= resize(A_sig,data_size+1) - resize(B_sig,data_size+1);
+							R_sig <= sub(data_size-1 downto 0);
 			when "10" => R_sig <= (A_sig and B_sig);
 			when "11" => R_sig <= (A_sig or B_sig);
 			when others => NULL;
@@ -55,12 +56,17 @@ B_sig <= signed(B);
 		
 	end process;
 	
-	--process (Result, ALUFlags)
-	--begin
-		--case Result is
-		--when (Result < '0') => ALUFlags(3) <= '1';
-		--end case;
-	--end process;
+		-- negative flag
+		-- logic is right but the syntax is wrong
+		if(R_sig(data_size-1))= '1' then N = '1';
+		else N = '0';
+		
+		-- zero flag
+		
+		-- carry flag
+		
+		-- overflow flag
+		
 end Behavioral;
 
 
