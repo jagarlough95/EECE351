@@ -21,11 +21,6 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity ALU is
 		Generic (data_size : positive := 32);
     Port ( A : in  STD_LOGIC_VECTOR (data_size-1 downto 0);
@@ -37,21 +32,36 @@ end ALU;
 
 architecture Behavioral of ALU is
 
-signal (N, Z, C, V) : out  STD_LOGIC;
+signal A_sig, B_sig : signed (data_size-1 downto 0);
+signal R_sig : signed (data_size-1 downto 0);
+signal N, Z, C, V : std_logic;
+signal sum : signed (data_size downto 0);
 
 begin
+A_sig <= signed(A);
+B_sig <= signed(B);
+
 	process(A, B, ALUControl)
 	begin
 		case ALUControl is
-			when "00" => Result <= A+B;
-			when "01" => Result <= A-B;
-			when "10" => Result <= A and B;
-			when "11" => Result <= A or B;
+			when "00" => Sum <= resize(A_sig,data_size+1) + resize(B_sig,data_size+1);
+								R_sig <= Sum(data_size-1 downto 0);
+			when "01" => Sum <= resize(A_sig,data_size+1) - resize(B_sig,data_size+1);
+							R_sig <= Sum(data_size-1 downto 0);
+			when "10" => R_sig <= (A_sig and B_sig);
+			when "11" => R_sig <= (A_sig or B_sig);
+			when others => NULL;
 		end case;
 		
-		if Result = "10" && "11" then ALUFlags(3) <= '1';
-		end if;
-		
 	end process;
+	
+	--process (Result, ALUFlags)
+	--begin
+		--case Result is
+		--when (Result < '0') => ALUFlags(3) <= '1';
+		--end case;
+	--end process;
 end Behavioral;
+
+
 
