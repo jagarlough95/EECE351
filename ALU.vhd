@@ -54,18 +54,36 @@ B_sig <= signed(B);
 			when others => NULL;
 		end case;
 		
-	end process;
-	
-		-- negative flag
-		-- logic is right but the syntax is wrong
-		if(R_sig(data_size-1))= '1' then N = '1';
-		else N = '0';
+			-- negative flag
+		if R_sig(data_size-1) = '1' then N <= '1';
+		else N <= '0';
+		end if;
 		
 		-- zero flag
+		-- Worth changing if hardware error
+		if (not R_sig and R_sig) = (R_sig'range => '0') then Z <= '1';
+		else Z <= '0';
+		end if;
 		
 		-- carry flag
+		-- Is this really the carry out?
+		if (ALUControl = "00" or ALUControl = "01") and R_sig(data_size) = '1' then C <= '1';
+		else C <= '0';
+		end if;
 		
 		-- overflow flag
+		if (A_sig(data_size) = '1' and B_sig(data_size) = '1') or (A_sig(data_size) = '0' and B_sig(data_size) = '0') then V <= '1';
+		else V <= '0';
+		end if;
+		
+	end process;
+	
+	--assign the flags
+	ALUFlags(3) <= N;
+	ALUFlags(2) <= Z;
+	ALUFlags(1) <= C;
+	ALUFlags(0) <= V;
+	
 		
 end Behavioral;
 
