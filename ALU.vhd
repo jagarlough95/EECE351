@@ -42,7 +42,7 @@ begin
 A_sig <= signed(A);
 B_sig <= signed(B);
 
-	process(A, B, ALUControl)
+	process(A_sig, B_sig, R_sig, Sum, Sub, ALUControl)
 	begin
 		case ALUControl is
 			when "00" => sum <= resize(A_sig,data_size+1) + resize(B_sig,data_size+1);
@@ -67,12 +67,12 @@ B_sig <= signed(B);
 		
 		-- carry flag
 		-- Is this really the carry out?
-		if (ALUControl = "00" or ALUControl = "01") and R_sig(data_size) = '1' then C <= '1';
+		if (ALUControl = "00" or ALUControl = "01") and R_sig(data_size-1) = '1' then C <= '1';
 		else C <= '0';
 		end if;
 		
 		-- overflow flag
-		if (A_sig(data_size) = '1' and B_sig(data_size) = '1') or (A_sig(data_size) = '0' and B_sig(data_size) = '0') then V <= '1';
+		if (A_sig(data_size-1) = '1' and B_sig(data_size-1) = '1') or (A_sig(data_size-1) = '0' and B_sig(data_size-1) = '0') then V <= '1';
 		else V <= '0';
 		end if;
 		
@@ -83,6 +83,9 @@ B_sig <= signed(B);
 	ALUFlags(2) <= Z;
 	ALUFlags(1) <= C;
 	ALUFlags(0) <= V;
+	
+	--assign result
+	Result <= std_logic_vector(R_sig(data_size-1 downto 0));
 	
 		
 end Behavioral;
