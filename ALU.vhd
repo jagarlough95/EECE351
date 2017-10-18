@@ -20,6 +20,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+--use ieee.std_logic_unsigned.all;
 
 entity ALU is
 		Generic (data_size : positive := 32);
@@ -44,14 +45,15 @@ B_sig <= signed(B);
 
 	process(A_sig, B_sig, R_sig, Sum, Sub, ALUControl)
 	begin
+	sub <= "000000000";
+	sum <= "000000000";
 		case ALUControl is
 			when "00" => sum <= resize(A_sig,data_size+1) + resize(B_sig,data_size+1);
 								R_sig <= sum(data_size-1 downto 0);
 			when "01" => sub <= resize(A_sig,data_size+1) - resize(B_sig,data_size+1);
 							R_sig <= sub(data_size-1 downto 0);
 			when "10" => R_sig <= (A_sig and B_sig);
-			when "11" => R_sig <= (A_sig or B_sig);
-			when others => NULL;
+			when others => R_sig <= (A_sig or B_sig);
 		end case;
 		
 			-- negative flag
@@ -61,7 +63,7 @@ B_sig <= signed(B);
 		
 		-- zero flag
 		-- Worth changing if hardware error
-		if (not R_sig and R_sig) = (R_sig'range => '0') then Z <= '1';
+		if (R_sig = "000000000") then Z <= '1';
 		else Z <= '0';
 		end if;
 		
@@ -72,7 +74,8 @@ B_sig <= signed(B);
 		end if;
 		
 		-- overflow flag
-		if (A_sig(data_size-1) = '1' and B_sig(data_size-1) = '1') or (A_sig(data_size-1) = '0' and B_sig(data_size-1) = '0') then V <= '1';
+		if ((((A_sig(data_size-1) = '1') and (B_sig(data_size-1) = '1')) and (sum(data_size-1) = '1')))
+		or ((((A_sig(data_size-1) = '0') and (B_sig(data_size-1) = '0')) and (sum(data_size-1) = '1'))) then V <= '1';
 		else V <= '0';
 		end if;
 		

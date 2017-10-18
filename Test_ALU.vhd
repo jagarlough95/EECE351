@@ -40,11 +40,12 @@ ARCHITECTURE behavior OF Test_ALU IS
     -- Component Declaration for the Unit Under Test (UUT)
  
     COMPONENT ALU
+	 Generic (data_size : positive := 32);
     PORT(
-         A : IN  std_logic_vector(7 downto 0);
-         B : IN  std_logic_vector(7 downto 0);
+         A : IN  std_logic_vector(data_size-1 downto 0);
+         B : IN  std_logic_vector(data_size-1 downto 0);
          ALUControl : IN  std_logic_vector(1 downto 0);
-         Result : OUT  std_logic_vector(7 downto 0);
+         Result : OUT  std_logic_vector(data_size-1 downto 0);
          ALUFlags : OUT  std_logic_vector(3 downto 0)
         );
     END COMPONENT;
@@ -89,7 +90,9 @@ ARCHITECTURE behavior OF Test_ALU IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: ALU PORT MAP (
+   uut: ALU
+Generic Map (data_size => 8)
+	PORT MAP (
           A => A,
           B => B,
           ALUControl => ALUControl,
