@@ -19,29 +19,28 @@ port (clk        : in std_logic;
 end Register_File;
 
 architecture Behaviorial of Register_File is
-	type Register_File_type is array (0 to 2**address_size-1) of
+	type RegFile_type is array (0 to 2**address_size-1) of
 								std_logic_vector (word_size-1 downto 0);
-	signal Register_File : Register_File_type := (others => '0');
+	signal RegFile : RegFile_type := (others => (others => '0'));
 begin 
  
--- write to Register_File
+-- write to RegFile
  process (clk)
 	begin
 		if rising_edge(clk) then
-		if (WE3 = '1') then
-		Register_File(to_integer(unsigned(WD3))) <= A3;
-		end if;
+			if (WE3 = '1') then
+			RegFile(to_integer(unsigned(A3))) <= WD3;
+			end if;
 	end if;
 end process; 
  
--- read from Register_File
- RD1 <= Register_File(to_integer(unsigned(A1)));
- RD2 <= Register_File(to_integer(unsigned(A2))); 
- 
  -- when a read address of 15 is placed on A1 and/or A2
-process (address_size)
+process (A1, A2, A3, R15, RegFile)
 begin
-	if address_size = "15" then R15 <= (RD1 and RD2);
+	if A1 = "1111" then RD1 <= R15; RD2 <= RegFile(to_integer(unsigned(A2)));
+	elsif A2 = "1111" then RD2 <= R15; RD1 <= RegFile(to_integer(unsigned(A1)));
+	elsif A1 = "1111" and A2 = "1111" then RD1 <= R15; RD2 <= R15;
+	else RD1 <= RegFile(to_integer(unsigned(A1))); RD2 <= RegFile(to_integer(unsigned(A2))); 
 	end if;
 end process;
  
