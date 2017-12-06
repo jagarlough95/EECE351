@@ -1,0 +1,1 @@
+-intstyle "ise" -incremental -lib "secureip" -o "C:/Users/Randy/OneDrive/BU/EECE 351/Project/Test_TopLevel_Single_Cycle_isim_beh.exe" -prj "C:/Users/Randy/OneDrive/BU/EECE 351/Project/Test_TopLevel_Single_Cycle_beh.prj" "work.Test_TopLevel_Single_Cycle" 
