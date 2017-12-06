@@ -40,18 +40,18 @@ end;
 architecture Behavioral of Datapath is
  
 	COMPONENT Register_File
-	GENERIC (word_size : natural := 32;
-				address_size : natural := 4 );
+	GENERIC (data_size : natural := 32;
+				addr_size : natural := 4 );
 	PORT(
 		clk : IN std_logic;
 		WE3 : IN std_logic;
-		A1 : IN std_logic_vector(address_size-1 downto 0);
-		A2 : IN std_logic_vector(address_size-1 downto 0);
-		A3 : IN std_logic_vector(address_size-1 downto 0);
-		WD3 : IN std_logic_vector(word_size-1 downto 0);
-		R15 : IN std_logic_vector(word_size-1 downto 0);          
-		RD1 : OUT std_logic_vector(word_size-1 downto 0);
-		RD2 : OUT std_logic_vector(word_size-1 downto 0)
+		A1 : IN std_logic_vector(3 downto 0);
+		A2 : IN std_logic_vector(3 downto 0);
+		A3 : IN std_logic_vector(3 downto 0);
+		WD3 : IN std_logic_vector(31 downto 0);
+		R15 : IN std_logic_vector(31 downto 0);          
+		RD1 : OUT std_logic_vector(31 downto 0);
+		RD2 : OUT std_logic_vector(31 downto 0)
 		);
 	END COMPONENT;
 
